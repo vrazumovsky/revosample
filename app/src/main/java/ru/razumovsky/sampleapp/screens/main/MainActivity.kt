@@ -1,7 +1,8 @@
-package ru.razumovsky.sampleapp
+package ru.razumovsky.sampleapp.screens.main
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import ru.razumovsky.sampleapp.R
 
 class MainActivity : AppCompatActivity() {
 
