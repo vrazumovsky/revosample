@@ -6,7 +6,7 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-class MainPresenterTest {
+class MainPresenterImplTest {
 
     @Mock
     private lateinit var mockView: MainView
