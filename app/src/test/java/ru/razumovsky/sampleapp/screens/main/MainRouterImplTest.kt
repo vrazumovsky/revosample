@@ -1,5 +1,10 @@
 package ru.razumovsky.sampleapp.screens.main
 
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentTransaction
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.eq
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -10,22 +15,36 @@ import ru.razumovsky.sampleapp.core.ui.BaseRouterView
 class MainRouterImplTest {
 
     @Mock
-    private lateinit var view: BaseRouterView
+    private lateinit var mockView: BaseRouterView
+
+    @Mock
+    private lateinit var mockFragmentManager: FragmentManager
+
+    @Mock
+    private lateinit var mockTransaction: FragmentTransaction
 
     private lateinit var router: MainRouter
+
+    private val mockContainerId = 0
 
 
     @Before
     fun initialize() {
         MockitoAnnotations.initMocks(this)
-        
-        router = MainRouterImpl(view)
+
+        whenever(mockView.getSupportFragmentManager()).thenReturn(mockFragmentManager)
+        whenever(mockFragmentManager.beginTransaction()).thenReturn(mockTransaction)
+        whenever(mockTransaction.replace(eq(mockContainerId), any())).thenReturn(mockTransaction)
+
+        router = MainRouterImpl(mockView, mockContainerId)
     }
 
 
     @Test
-    fun `router openCurrencyChangeInfo() method called, should call view getSupportFragmentManager()`() {
+    fun `router openCurrencyChangeInfo() method called, should call view getSupportFragmentManager() and change fragment`() {
         router.openCurrencyChangeInfo()
-        verify(view).getSupportFragmentManager()
+        verify(mockView).getSupportFragmentManager()
+        verify(mockTransaction).replace(eq(mockContainerId), any())
+        verify(mockTransaction).commit()
     }
 }
