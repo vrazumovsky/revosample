@@ -7,7 +7,7 @@ class MainPresenterImpl @Inject constructor(
     private val router: MainRouter
 ) : MainPresenter {
 
-    override fun onCreate() {
+    override fun onReady() {
         router.openCurrencyChangeInfo()
     }
 }
