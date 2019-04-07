@@ -1,8 +1,10 @@
 package ru.razumovsky.sampleapp.screens.main
 
+import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.verify
+import org.mockito.MockitoAnnotations
 import ru.razumovsky.sampleapp.core.ui.BaseRouterView
 
 class MainRouterImplTest {
@@ -11,6 +13,14 @@ class MainRouterImplTest {
     private lateinit var view: BaseRouterView
 
     private lateinit var router: MainRouter
+
+
+    @Before
+    fun initialize() {
+        MockitoAnnotations.initMocks(this)
+        
+        router = MainRouterImpl(view)
+    }
 
 
     @Test
