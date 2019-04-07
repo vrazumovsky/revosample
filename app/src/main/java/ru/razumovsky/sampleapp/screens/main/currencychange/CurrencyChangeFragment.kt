@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import ru.razumovsky.sampleapp.R
 
 
-class CurrencyChangeFragment : Fragment() {
+class CurrencyChangeFragment : Fragment(), CurrencyChangeView {
 
     companion object {
         fun newInstance() : CurrencyChangeFragment {
