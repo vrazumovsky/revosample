@@ -1,6 +1,8 @@
 package ru.razumovsky.sampleapp.screens.main
 
-class MainRouterImpl : MainRouter {
+import ru.razumovsky.sampleapp.core.ui.BaseRouterView
+
+class MainRouterImpl(private val view: BaseRouterView) : MainRouter {
     override fun openCurrencyChangeInfo() {
 
     }
