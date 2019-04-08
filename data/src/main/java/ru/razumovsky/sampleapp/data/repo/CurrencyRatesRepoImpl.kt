@@ -13,7 +13,8 @@ class CurrencyRatesRepoImpl @Inject constructor(
 
     override fun getRates(): Observable<List<CurrencyRate>> {
         return request.run()
-            .map { it.rates?.map { CurrencyRate(it.key, it.value) } }
+            .map { mapper.map(it) }
+            .map { it.rates.map { CurrencyRate(it.key, it.value) } }
     }
 
 }

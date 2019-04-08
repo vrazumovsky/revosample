@@ -10,6 +10,7 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import ru.razumovsky.sampleapp.data.entity.Currency
+import ru.razumovsky.sampleapp.data.entity.CurrencyRates
 import ru.razumovsky.sampleapp.data.mapper.CurrencyRatesDtoToEntityMapper
 import ru.razumovsky.sampleapp.data.network.dto.CurrencyRatesResponse
 import ru.razumovsky.sampleapp.data.network.request.CurrencyRatesRequest
@@ -25,6 +26,7 @@ class CurrencyRatesRepoImplTest {
     private lateinit var repo: CurrencyRatesRepo
 
     private lateinit var mockResponse: CurrencyRatesResponse
+    private lateinit var mockEntity: CurrencyRates
 
     private val mockDate = "03-03-2019"
 
@@ -40,7 +42,9 @@ class CurrencyRatesRepoImplTest {
         MockitoAnnotations.initMocks(this)
 
         mockResponse = CurrencyRatesResponse(Currency.EUR.value, mockDate, mockRates)
+        mockEntity = CurrencyRates(Currency.EUR.value, mockDate, mockRates)
         whenever(mockRequest.run()).thenReturn(Observable.just(mockResponse))
+        whenever(mockMapper.map(mockResponse)).thenReturn(mockEntity)
 
         repo = CurrencyRatesRepoImpl(mockRequest, mockMapper)
     }
@@ -54,8 +58,8 @@ class CurrencyRatesRepoImplTest {
 
     @Test
     fun `repo getRates called, should run mapper after successful request`() {
-        repo.getRates()
-        verify(mockMapper).map(eq(mockResponse))
+        repo.getRates().blockingSingle()
+        verify(mockMapper).map(mockResponse)
     }
 
     @Test
