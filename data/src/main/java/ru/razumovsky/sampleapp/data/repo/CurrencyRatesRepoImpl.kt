@@ -9,7 +9,8 @@ import javax.inject.Inject
 class CurrencyRatesRepoImpl @Inject constructor(private val request: CurrencyRatesRequest) : CurrencyRatesRepo {
 
     override fun getRates(): Observable<List<CurrencyRate>> {
-        return Observable.empty()
+        return request.run()
+            .map { it.rates.map { CurrencyRate(it.key, it.value) } }
     }
 
 }
