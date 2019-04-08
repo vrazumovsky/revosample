@@ -1,5 +1,6 @@
 package ru.razumovsky.sampleapp.data.repo
 
+import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.Observable
@@ -9,6 +10,7 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import ru.razumovsky.sampleapp.data.entity.Currency
+import ru.razumovsky.sampleapp.data.mapper.CurrencyRatesDtoToEntityMapper
 import ru.razumovsky.sampleapp.data.network.dto.CurrencyRatesResponse
 import ru.razumovsky.sampleapp.data.network.request.CurrencyRatesRequest
 
@@ -16,6 +18,9 @@ class CurrencyRatesRepoImplTest {
 
     @Mock
     private lateinit var mockRequest: CurrencyRatesRequest
+
+    @Mock
+    private lateinit var mockMapper: CurrencyRatesDtoToEntityMapper
 
     private lateinit var repo: CurrencyRatesRepo
 
@@ -37,7 +42,7 @@ class CurrencyRatesRepoImplTest {
         mockResponse = CurrencyRatesResponse(Currency.EUR.value, mockDate, mockRates)
         whenever(mockRequest.run()).thenReturn(Observable.just(mockResponse))
 
-        repo = CurrencyRatesRepoImpl(mockRequest)
+        repo = CurrencyRatesRepoImpl(mockRequest, mockMapper)
     }
 
 
@@ -45,6 +50,12 @@ class CurrencyRatesRepoImplTest {
     fun `repo getRates called, should run request`() {
         repo.getRates()
         verify(mockRequest).run()
+    }
+
+    @Test
+    fun `repo getRates called, should run mapper after successful request`() {
+        repo.getRates()
+        verify(mockMapper).map(eq(mockResponse))
     }
 
     @Test
