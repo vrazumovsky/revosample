@@ -1,10 +1,9 @@
 package ru.razumovsky.sampleapp.data.repo
 
-import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.Observable
-import junit.framework.Assert.assertEquals
+import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -31,7 +30,7 @@ class CurrencyRatesRepoImplTest {
     private val mockDate = "03-03-2019"
 
     private val mockRates = mapOf(
-        Pair(Currency.EUR.value, 1.4f),
+        Pair(Currency.BGN.value, 1.4f),
         Pair(Currency.AUD.value, 1.3f),
         Pair(Currency.USD.value, 1.1f)
     )
@@ -70,4 +69,11 @@ class CurrencyRatesRepoImplTest {
         verify(mockRequest).run()
     }
 
+    @Test
+    fun `repo getRates called, CurrencyRatesResponse doesn't have base rate in its map, should add additional base rate to return list`() {
+        val rates = repo.getRates().blockingSingle()
+        assertEquals(rates.count { it.name == mockResponse.base!! }, 1)
+
+        verify(mockRequest).run()
+    }
 }
