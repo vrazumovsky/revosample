@@ -62,7 +62,7 @@ class CurrencyRatesRepoImplTest {
     }
 
     @Test
-    fun `repo getRates called, CurrencyRatesResponse doesn't have base rate in its map, return list size should equals response rates size plus one`() {
+    fun `repo getRates called, CurrencyRatesResponse doesn't have base rate in its map, return map size should equals response rates size plus one`() {
         val rates = repo.getRates().blockingSingle()
         assertEquals(mockResponse.rates!!.size + 1, rates.size)
 
@@ -70,9 +70,9 @@ class CurrencyRatesRepoImplTest {
     }
 
     @Test
-    fun `repo getRates called, CurrencyRatesResponse doesn't have base rate in its map, should add additional base rate to return list`() {
+    fun `repo getRates called, CurrencyRatesResponse doesn't have base rate in its map, should add additional base rate to return map`() {
         val rates = repo.getRates().blockingSingle()
-        assertEquals(rates.count { it.name == mockResponse.base!! }, 1)
+        assertEquals(rates[mockResponse.base], 1f)
 
         verify(mockRequest).run()
     }

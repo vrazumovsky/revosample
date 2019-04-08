@@ -5,5 +5,5 @@ import ru.razumovsky.sampleapp.data.entity.CurrencyRate
 
 interface CurrencyRatesRepo {
 
-    fun getRates(): Observable<List<CurrencyRate>>
+    fun getRates(): Observable<Map<String, Float>>
 }
