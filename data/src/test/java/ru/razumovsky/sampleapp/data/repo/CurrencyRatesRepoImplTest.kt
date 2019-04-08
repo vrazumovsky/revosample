@@ -46,4 +46,13 @@ class CurrencyRatesRepoImplTest {
         repo.getRates()
         verify(mockRequest).run()
     }
+
+    @Test
+    fun `repo getRates called, CurrencyRatesResponse doesn't have base rate in its map, return list size should equals response rates size plus one`() {
+        val rates = repo.getRates().blockingSingle()
+        assertEquals(mockResponse.rates.size + 1, rates.size)
+
+        verify(mockRequest).run()
+    }
+
 }
