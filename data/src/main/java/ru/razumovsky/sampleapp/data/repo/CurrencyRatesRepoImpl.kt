@@ -3,10 +3,13 @@ package ru.razumovsky.sampleapp.data.repo
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import ru.razumovsky.sampleapp.data.entity.CurrencyRate
+import ru.razumovsky.sampleapp.data.mapper.CurrencyRatesDtoToEntityMapper
 import ru.razumovsky.sampleapp.data.network.request.CurrencyRatesRequest
 import javax.inject.Inject
 
-class CurrencyRatesRepoImpl @Inject constructor(private val request: CurrencyRatesRequest) : CurrencyRatesRepo {
+class CurrencyRatesRepoImpl @Inject constructor(
+    private val request: CurrencyRatesRequest,
+    private val mapper: CurrencyRatesDtoToEntityMapper) : CurrencyRatesRepo {
 
     override fun getRates(): Observable<List<CurrencyRate>> {
         return request.run()
