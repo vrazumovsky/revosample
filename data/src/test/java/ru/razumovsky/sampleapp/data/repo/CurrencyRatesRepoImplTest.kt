@@ -1,9 +1,9 @@
 package ru.razumovsky.sampleapp.data.repo
 
-import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.Observable
+import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -50,7 +50,7 @@ class CurrencyRatesRepoImplTest {
     @Test
     fun `repo getRates called, CurrencyRatesResponse doesn't have base rate in its map, return list size should equals response rates size plus one`() {
         val rates = repo.getRates().blockingSingle()
-        assertEquals(mockResponse.rates.size + 1, rates.size)
+        assertEquals(mockResponse.rates!!.size + 1, rates.size)
 
         verify(mockRequest).run()
     }

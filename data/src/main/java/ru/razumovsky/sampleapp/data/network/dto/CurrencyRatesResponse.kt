@@ -1,6 +1,5 @@
 package ru.razumovsky.sampleapp.data.network.dto
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class CurrencyRatesResponse(
@@ -8,7 +7,6 @@ class CurrencyRatesResponse(
     @SerializedName("date") val date: String?,
 
     @SerializedName("rates")
-    @Expose
-    val rates: Map<String, Float>
+    val rates: Map<String, Float>?
 
 )
