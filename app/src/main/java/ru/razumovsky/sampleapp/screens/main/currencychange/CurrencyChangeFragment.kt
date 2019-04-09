@@ -41,6 +41,7 @@ class CurrencyChangeFragment : Fragment(), CurrencyChangeView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter.into(recyclerView)
+        buildComponent()
         presenter.onReady()
 
     }
@@ -48,5 +49,9 @@ class CurrencyChangeFragment : Fragment(), CurrencyChangeView {
     override fun showCurrencies(data: List<StableId>) {
         items.clear()
         items.addAll(data)
+    }
+
+    private fun buildComponent() {
+        (activity as CurrencyChangeInjector).inject(this)
     }
 }
