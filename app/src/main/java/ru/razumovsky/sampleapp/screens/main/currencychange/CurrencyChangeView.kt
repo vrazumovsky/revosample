@@ -1,3 +1,7 @@
 package ru.razumovsky.sampleapp.screens.main.currencychange
 
-interface CurrencyChangeView
+import com.github.nitrico.lastadapter.StableId
+
+interface CurrencyChangeView {
+    fun showCurrencies(data: List<StableId>)
+}
