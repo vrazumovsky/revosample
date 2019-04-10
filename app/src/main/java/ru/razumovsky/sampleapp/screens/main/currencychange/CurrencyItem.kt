@@ -4,7 +4,7 @@ import com.github.nitrico.lastadapter.StableId
 
 data class CurrencyItem(val name: String,
                         val verboseName: String,
-                        val rate: Float) : StableId {
+                        val rate: String) : StableId {
     override val stableId: Long
-        get() = name.hashCode().toLong() + rate.toLong()
+        get() = name.hashCode().toLong() + rate.toFloat().toLong()
 }
