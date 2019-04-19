@@ -23,7 +23,7 @@ class CurrencyChangeFragment : Fragment(), CurrencyChangeView {
         }
     }
 
-    private val items: ObservableList<StableId> = ObservableArrayList<StableId>()
+    private val items: MutableList<StableId> = mutableListOf()
 
     private val adapter: LastAdapter = LastAdapter(items, BR.item, stableIds = true)
 
@@ -49,6 +49,7 @@ class CurrencyChangeFragment : Fragment(), CurrencyChangeView {
     override fun showCurrencies(data: List<StableId>) {
         items.clear()
         items.addAll(data)
+        adapter.notifyDataSetChanged()
     }
 
     private fun buildComponent() {
