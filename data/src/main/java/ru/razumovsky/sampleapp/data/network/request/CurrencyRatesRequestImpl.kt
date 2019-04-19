@@ -9,8 +9,6 @@ import javax.inject.Inject
 class CurrencyRatesRequestImpl @Inject constructor(private val api: CurrencyRatesApi) : CurrencyRatesRequest {
     override fun run(): Observable<CurrencyRatesResponse> {
         return api.getRates()
-            .subscribeOn(Schedulers.io())
-
     }
 
 }
