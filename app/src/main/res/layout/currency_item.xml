@@ -55,6 +55,8 @@
                   android:inputType="numberDecimal"
                   android:maxLength="14"
                   android:text="@{item.rate}"
+                  tools:text="34.21"
+                  android:gravity="center_horizontal"
                   android:layout_centerVertical="true"
                   android:layout_alignParentEnd="true"
                   android:layout_alignParentRight="true"/>
