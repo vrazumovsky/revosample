@@ -18,7 +18,8 @@ class CurrencyChangePresenterImpl @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onNext = {
-                    view.showCurrencies(it)
+                    val sortedList = sortNewDataLikeOnView(it)
+                    view.showCurrencies(sortedList)
                 },
                 onError = {
                     it.printStackTrace()
@@ -26,6 +27,16 @@ class CurrencyChangePresenterImpl @Inject constructor(
             )
     }
 
+    private fun sortNewDataLikeOnView(data: List<StableId>): List<StableId> {
+        return data.sortedBy { stableId ->
+            val index = view.getCurrencies().indexOfFirst { it.stableId == stableId.stableId }
+            if (index == -1) {
+                Int.MAX_VALUE
+            } else {
+                index
+            }
+        }
+    }
 
     override fun itemClicked(item: CurrencyItem) {
         val list = mutableListOf<StableId>()
