@@ -1,5 +1,6 @@
 package ru.razumovsky.sampleapp.screens.main.currencychange
 
+import com.github.nitrico.lastadapter.StableId
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import ru.razumovsky.sampleapp.domain.usecase.GetCurrencyRatesUseCase
@@ -23,6 +24,15 @@ class CurrencyChangePresenterImpl @Inject constructor(
                     it.printStackTrace()
                 }
             )
+    }
+
+
+    override fun itemClicked(item: CurrencyItem) {
+        val list = mutableListOf<StableId>()
+        list.addAll(view.getCurrencies())
+        list.remove(item)
+        list.add(0, item)
+        view.showCurrencies(list)
     }
 
 }
