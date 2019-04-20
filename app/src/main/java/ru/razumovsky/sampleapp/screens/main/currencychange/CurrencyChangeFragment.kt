@@ -59,6 +59,8 @@ class CurrencyChangeFragment : Fragment(), CurrencyChangeView {
         adapter.notifyDataSetChanged()
     }
 
+    override fun getCurrencies(): List<StableId> = items
+
     private fun buildComponent() {
         (activity as CurrencyChangeInjector).inject(this)
     }

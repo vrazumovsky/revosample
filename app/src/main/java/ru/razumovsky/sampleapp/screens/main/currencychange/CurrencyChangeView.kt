@@ -4,4 +4,6 @@ import com.github.nitrico.lastadapter.StableId
 
 interface CurrencyChangeView {
     fun showCurrencies(data: List<StableId>)
+
+    fun getCurrencies(): List<StableId>
 }
