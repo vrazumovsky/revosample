@@ -76,4 +76,23 @@ class CurrencyChangePresenterImpl @Inject constructor(
         view.showCurrencies(list)
     }
 
+    override fun amountChanged(amount: String) {
+        useCase.execute()
+            .sortCurrencies()
+            .calculateCurrencyValues()
+            .map { mapper.map(it) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(
+                onNext = {
+                    view.showCurrencies(it)
+                },
+                onError = {
+                    it.printStackTrace()
+                }
+            )
+    }
+
+    private fun getCurrencies(): List<CurrencyItem> {
+        return view.getCurrencies().filterIsInstance(CurrencyItem::class.java)
+    }
 }
