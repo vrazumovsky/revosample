@@ -8,7 +8,8 @@ open class BaseFragment : Fragment() {
 
     protected fun showKeyboard() {
         val inputManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        inputManager?.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0)
+        val view = activity?.currentFocus ?: return
+        inputManager?.showSoftInput(view, 0)
     }
 
     protected fun hideKeyboard() {
