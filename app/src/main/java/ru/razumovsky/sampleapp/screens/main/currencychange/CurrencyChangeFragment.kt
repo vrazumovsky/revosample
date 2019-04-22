@@ -1,26 +1,32 @@
 package ru.razumovsky.sampleapp.screens.main.currencychange
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.nitrico.lastadapter.LastAdapter
 import com.github.nitrico.lastadapter.StableId
+import com.jakewharton.rxbinding2.widget.RxTextView
+import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.currency_change_fragment.*
 import ru.razumovsky.sampleapp.BR
 import ru.razumovsky.sampleapp.R
+import ru.razumovsky.sampleapp.core.ui.BaseFragment
 import ru.razumovsky.sampleapp.databinding.CurrencyItemBinding
 import javax.inject.Inject
 
 
-class CurrencyChangeFragment : Fragment(), CurrencyChangeView {
+class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
 
     companion object {
-        fun newInstance() : CurrencyChangeFragment {
+        fun newInstance(): CurrencyChangeFragment {
             return CurrencyChangeFragment()
         }
     }
+
+    private var firstItemEditTextSubscription: Disposable? = null
 
     private val items: MutableList<StableId> = mutableListOf()
 
@@ -32,10 +38,25 @@ class CurrencyChangeFragment : Fragment(), CurrencyChangeView {
                     presenter.itemClicked(it)
                     recyclerView.scrollToPosition(0)
                 }
+                it.binding.amount.requestFocus()
+                showKeyboard()
             }
 
-        }
+            onBind {
+                if (it.adapterPosition == 0) {
+                    firstItemEditTextSubscription?.dispose()
+                    firstItemEditTextSubscription = RxTextView.textChanges(it.binding.amount)
+                        .skipInitialValue()
+                        .subscribeBy { presenter.amountChanged(it.toString()) }
+                }
+            }
 
+            onRecycle {
+                if (it.adapterPosition == 0) {
+                    firstItemEditTextSubscription?.dispose()
+                }
+            }
+        }
 
     @Inject
     lateinit var presenter: CurrencyChangePresenter

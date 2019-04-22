@@ -5,4 +5,6 @@ interface CurrencyChangePresenter {
     fun onReady()
 
     fun itemClicked(item: CurrencyItem)
+
+    fun amountChanged(amount: String)
 }
