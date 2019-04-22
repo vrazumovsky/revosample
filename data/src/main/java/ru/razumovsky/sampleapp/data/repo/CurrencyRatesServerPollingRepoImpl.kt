@@ -1,6 +1,7 @@
 package ru.razumovsky.sampleapp.data.repo
 
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.razumovsky.sampleapp.data.mapper.CurrencyRatesDtoToEntityMapper
 import ru.razumovsky.sampleapp.data.network.request.CurrencyRatesRequest
@@ -13,6 +14,8 @@ class CurrencyRatesServerPollingRepoImpl @Inject constructor(
 
 ) : CurrencyRatesRepo {
 
+    private val ratesCache: MutableMap<String, Float> = mutableMapOf()
+
     override fun getRates(): Observable<Map<String, Float>> {
         return Observable.interval(1, TimeUnit.SECONDS)
             .subscribeOn(Schedulers.newThread())
@@ -23,7 +26,13 @@ class CurrencyRatesServerPollingRepoImpl @Inject constructor(
             .filter { it.isActual }
             .map { it.result }
             .retry()
+            .doOnNext {
+                ratesCache.clear()
+                ratesCache.putAll(it)
+            }
     }
+
+    override fun getRatesSingle(): Single<Map<String, Float>> = Single.fromCallable { ratesCache }
 
     private fun sendGetRatesRequest(counter: Long): Observable<PollingResult> {
         return request.run()
