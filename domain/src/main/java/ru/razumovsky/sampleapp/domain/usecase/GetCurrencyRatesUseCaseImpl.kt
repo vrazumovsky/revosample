@@ -10,15 +10,34 @@ class GetCurrencyRatesUseCaseImpl @Inject constructor(
     private val repo: CurrencyRatesRepo
 ) : GetCurrencyRatesUseCase {
     override fun execute(): Observable<List<CurrencyRateViewModel>> {
-        return repo.getRates().map {
-            it.map {
-                CurrencyRateViewModel(
-                    name = it.key,
-                    verboseName = Currency.find(it.key).verboseName,
-                    value = it.value
-                )
+        return repo.getRates()
+            .map {
+                it.map {
+                    CurrencyRateViewModel(
+                        name = it.key,
+                        verboseName = Currency.find(it.key).verboseName,
+                        value = it.value
+                    )
+                }
+
+            }
+            .makeEuroFirstCurrency()
+    }
+
+    private fun Observable<List<CurrencyRateViewModel>>.makeEuroFirstCurrency():
+            Observable<List<CurrencyRateViewModel>> = map {
+        makeEuroFirstCurrency(it)
+    }
+
+    private fun makeEuroFirstCurrency(data: List<CurrencyRateViewModel>): List<CurrencyRateViewModel> {
+        val euro = data.find { it.name == Currency.EUR.value }
+
+        return mutableListOf<CurrencyRateViewModel>().apply {
+            addAll(data)
+            euro?.let {
+                remove(euro)
+                add(0, euro)
             }
         }
     }
-
 }
