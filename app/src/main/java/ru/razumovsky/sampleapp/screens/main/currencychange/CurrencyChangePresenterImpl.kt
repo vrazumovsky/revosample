@@ -15,13 +15,14 @@ class CurrencyChangePresenterImpl @Inject constructor(
 ) : CurrencyChangePresenter {
 
     override fun onReady() {
-        useCase.execute()
+        useCase.executePolling()
+            .sortCurrencies()
+            .calculateCurrencyValues()
             .map { mapper.map(it) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onNext = {
-                    val sortedList = sortNewDataLikeOnView(it)
-                    view.showCurrencies(sortedList)
+                    view.showCurrencies(it)
                 },
                 onError = {
                     it.printStackTrace()
@@ -29,9 +30,6 @@ class CurrencyChangePresenterImpl @Inject constructor(
             )
     }
 
-    private fun sortNewDataLikeOnView(data: List<StableId>): List<StableId> {
-        return data.sortedBy { stableId ->
-            val index = view.getCurrencies().indexOfFirst { it.stableId == stableId.stableId }
     private fun Observable<List<CurrencyRateViewModel>>.calculateCurrencyValues():
             Observable<List<CurrencyRateViewModel>> = map {
             val baseItem = getCurrencies().firstOrNull()
@@ -53,6 +51,15 @@ class CurrencyChangePresenterImpl @Inject constructor(
         }
         return data
     }
+
+    private fun Observable<List<CurrencyRateViewModel>>.sortCurrencies():
+            Observable<List<CurrencyRateViewModel>> = map { sortNewDataLikeOnView(it) }
+
+
+    private fun sortNewDataLikeOnView(data: List<CurrencyRateViewModel>): List<CurrencyRateViewModel> {
+        val currencies = getCurrencies()
+        return data.sortedBy { item ->
+            val index = currencies.indexOfFirst { it.name == item.name }
             if (index == -1) {
                 Int.MAX_VALUE
             } else {
