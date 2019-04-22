@@ -5,4 +5,6 @@ import ru.razumovsky.sampleapp.domain.viewmodel.CurrencyRateViewModel
 
 interface GetCurrencyRatesUseCase {
     fun execute(): Observable<List<CurrencyRateViewModel>>
+
+    fun executePolling(): Observable<List<CurrencyRateViewModel>>
 }

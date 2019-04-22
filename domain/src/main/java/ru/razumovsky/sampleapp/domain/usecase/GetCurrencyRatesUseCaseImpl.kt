@@ -9,19 +9,29 @@ import javax.inject.Inject
 class GetCurrencyRatesUseCaseImpl @Inject constructor(
     private val repo: CurrencyRatesRepo
 ) : GetCurrencyRatesUseCase {
-    override fun execute(): Observable<List<CurrencyRateViewModel>> {
-        return repo.getRates()
-            .map {
-                it.map {
-                    CurrencyRateViewModel(
-                        name = it.key,
-                        verboseName = Currency.find(it.key).verboseName,
-                        value = it.value
-                    )
-                }
 
-            }
+    override fun executePolling(): Observable<List<CurrencyRateViewModel>> {
+        return repo.getRates()
+            .mapRates()
             .makeEuroFirstCurrency()
+    }
+
+    override fun execute(): Observable<List<CurrencyRateViewModel>> {
+        return repo.getRatesSingle()
+            .toObservable()
+            .mapRates()
+            .makeEuroFirstCurrency()
+    }
+
+    private fun Observable<Map<String, Float>>.mapRates():
+            Observable<List<CurrencyRateViewModel>> = map {
+        it.map {
+            CurrencyRateViewModel(
+                name = it.key,
+                verboseName = Currency.find(it.key).verboseName,
+                value = it.value
+            )
+        }
     }
 
     private fun Observable<List<CurrencyRateViewModel>>.makeEuroFirstCurrency():
