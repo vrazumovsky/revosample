@@ -51,6 +51,16 @@ class CurrencyChangeFragment : Fragment(), CurrencyChangeView {
         buildComponent()
         presenter.onReady()
 
+        hideKeyboardOnScroll()
+    }
+
+    private fun hideKeyboardOnScroll() {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                hideKeyboard()
+            }
+        })
     }
 
     override fun showCurrencies(data: List<StableId>) {
