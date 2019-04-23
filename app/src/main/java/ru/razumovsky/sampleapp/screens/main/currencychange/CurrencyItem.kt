@@ -5,6 +5,7 @@ import com.github.nitrico.lastadapter.StableId
 
 data class CurrencyItem(val name: String,
                         val verboseName: String,
+                        val imageResource: Int,
                         var rate: String) : StableId {
     override val stableId: Long
         get() = name.hashCode().toLong()
