@@ -73,7 +73,8 @@ class CurrencyChangePresenterImpl @Inject constructor(
     }
 
     private fun Observable<List<CurrencyRateViewModel>>.prepareAndShowData(): Disposable =
-        calculateCurrencyValues()
+        sortCurrencies()
+            .calculateCurrencyValues()
             .map { mapper.map(it) }
             .remainFirstItemUnchanged()
             .observeOn(AndroidSchedulers.mainThread())
