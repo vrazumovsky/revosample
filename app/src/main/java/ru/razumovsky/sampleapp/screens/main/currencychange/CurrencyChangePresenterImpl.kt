@@ -19,6 +19,7 @@ class CurrencyChangePresenterImpl @Inject constructor(
             .sortCurrencies()
             .calculateCurrencyValues()
             .map { mapper.map(it) }
+            .remainFirstItemUnchanged()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onNext = {
@@ -81,6 +82,7 @@ class CurrencyChangePresenterImpl @Inject constructor(
             .sortCurrencies()
             .calculateCurrencyValues()
             .map { mapper.map(it) }
+            .remainFirstItemUnchanged()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onNext = {
@@ -91,6 +93,19 @@ class CurrencyChangePresenterImpl @Inject constructor(
                 }
             )
     }
+
+
+    private fun Observable<List<StableId>>.remainFirstItemUnchanged():
+            Observable<List<StableId>> = map { currencies ->
+        val firstOld = getCurrencies().firstOrNull()
+        firstOld?.let {
+            val mutableList = currencies.toMutableList()
+            mutableList.removeAt(0)
+            mutableList.add(0, firstOld)
+            mutableList
+        } ?: currencies
+    }
+
 
     private fun getCurrencies(): List<CurrencyItem> {
         return view.getCurrencies().filterIsInstance(CurrencyItem::class.java)
