@@ -46,10 +46,8 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
 
             onBind {
                 if (it.adapterPosition == 0) {
-                    firstItemEditTextSubscription?.dispose()
-                    firstItemEditTextSubscription = RxTextView.textChanges(it.binding.amount)
-                        .skipInitialValue()
-                        .subscribeBy { presenter.amountChanged(it.toString()) }
+                    listenToTextChanges(it.binding.amount)
+                    hideKeyboardByPressingDone(it.binding.amount)
                 }
             }
 
@@ -75,6 +73,13 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
         presenter.onReady()
 
         hideKeyboardOnScroll()
+    }
+
+    private fun listenToTextChanges(editText: EditText) {
+        firstItemEditTextSubscription?.dispose()
+        firstItemEditTextSubscription = RxTextView.textChanges(editText)
+            .skipInitialValue()
+            .subscribeBy { presenter.amountChanged(it.toString()) }
     }
 
     private fun hideKeyboardOnScroll() {
