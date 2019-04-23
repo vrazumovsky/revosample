@@ -32,14 +32,15 @@ class CurrencyChangePresenterImpl @Inject constructor(
     }
 
     private fun Observable<List<CurrencyRateViewModel>>.calculateCurrencyValues():
-            Observable<List<CurrencyRateViewModel>> = map {
-            val baseItem = getCurrencies().firstOrNull()
-            if (baseItem != null) {
-                calculateValues(baseItem.rate.toFloat(), it)
-            } else {
-                it
-            }
-        }
+            Observable<List<CurrencyRateViewModel>> = map { currencies ->
+        val baseItem = getCurrencies().firstOrNull()
+        baseItem?.let {
+            baseItem.rate.toFloatOrNull()?.let { calculateValues(it, currencies) } ?: mapToEptyValues(currencies)
+        } ?: currencies
+    }
+
+    private fun mapToEptyValues(currencies: List<CurrencyRateViewModel>): List<CurrencyRateViewModel>  =
+        currencies.map { CurrencyRateViewModel(it.name, 0f) }
 
     private fun calculateValues(baseRate: Float, data: List<CurrencyRateViewModel>): List<CurrencyRateViewModel> {
         val first = data.firstOrNull()
