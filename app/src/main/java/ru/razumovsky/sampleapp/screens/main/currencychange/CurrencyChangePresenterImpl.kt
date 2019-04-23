@@ -3,6 +3,7 @@ package ru.razumovsky.sampleapp.screens.main.currencychange
 import com.github.nitrico.lastadapter.StableId
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import ru.razumovsky.sampleapp.domain.usecase.GetCurrencyRatesUseCase
 import ru.razumovsky.sampleapp.domain.viewmodel.CurrencyRateViewModel
@@ -16,19 +17,7 @@ class CurrencyChangePresenterImpl @Inject constructor(
 
     override fun onReady() {
         useCase.executePolling()
-            .sortCurrencies()
-            .calculateCurrencyValues()
-            .map { mapper.map(it) }
-            .remainFirstItemUnchanged()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(
-                onNext = {
-                    view.showCurrencies(it)
-                },
-                onError = {
-                    it.printStackTrace()
-                }
-            )
+            .prepareAndShowData()
     }
 
     private fun Observable<List<CurrencyRateViewModel>>.calculateCurrencyValues():
@@ -39,7 +28,7 @@ class CurrencyChangePresenterImpl @Inject constructor(
         } ?: currencies
     }
 
-    private fun mapToEptyValues(currencies: List<CurrencyRateViewModel>): List<CurrencyRateViewModel>  =
+    private fun mapToEptyValues(currencies: List<CurrencyRateViewModel>): List<CurrencyRateViewModel> =
         currencies.map { CurrencyRateViewModel(it.name, 0f) }
 
     private fun calculateValues(baseRate: Float, data: List<CurrencyRateViewModel>): List<CurrencyRateViewModel> {
@@ -80,8 +69,11 @@ class CurrencyChangePresenterImpl @Inject constructor(
 
     override fun amountChanged(amount: String) {
         useCase.execute()
-            .sortCurrencies()
-            .calculateCurrencyValues()
+            .prepareAndShowData()
+    }
+
+    private fun Observable<List<CurrencyRateViewModel>>.prepareAndShowData(): Disposable =
+        calculateCurrencyValues()
             .map { mapper.map(it) }
             .remainFirstItemUnchanged()
             .observeOn(AndroidSchedulers.mainThread())
@@ -93,7 +85,6 @@ class CurrencyChangePresenterImpl @Inject constructor(
                     it.printStackTrace()
                 }
             )
-    }
 
 
     private fun Observable<List<StableId>>.remainFirstItemUnchanged():
