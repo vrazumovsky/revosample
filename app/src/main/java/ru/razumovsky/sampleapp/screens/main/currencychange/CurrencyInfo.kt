@@ -10,7 +10,7 @@ enum class CurrencyInfo(val value: String,
 
     USD("USD", "US Dollar", R.drawable.usd),
     EUR("EUR", "Euro", R.drawable.euro),
-    GBP("GBP", "The pound sterling", R.drawable.gbp),
+    GBP("GBP", "British Pound", R.drawable.gbp),
     AUD("AUD", "Australian Dollar", R.drawable.aud),
     BGN("BGN", "Bulgaria Lev", R.drawable.bgn),
     BRL("BRL", "Brazilian Real", R.drawable.brl),
