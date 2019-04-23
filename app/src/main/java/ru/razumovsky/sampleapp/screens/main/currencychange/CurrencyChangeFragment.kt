@@ -71,6 +71,11 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
         buildComponent()
 
         hideKeyboardOnScroll()
+        initProgressBar()
+    }
+
+    private fun initProgressBar() {
+        progressbar.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override fun onStart() {
@@ -136,6 +141,7 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
         items.clear()
         items.addAll(data)
         adapter.notifyDataSetChanged()
+        progressbar.visibility = View.GONE
     }
 
     override fun getCurrencies(): List<StableId> = items
