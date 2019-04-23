@@ -46,7 +46,7 @@ class CurrencyChangePresenterImpl @Inject constructor(
             return data
                 .map {
                     val rate = (it.value / first.value) * baseRate
-                    CurrencyRateViewModel(it.name, it.verboseName, rate)
+                    CurrencyRateViewModel(it.name, rate)
                 }
         }
         return data

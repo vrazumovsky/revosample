@@ -28,7 +28,6 @@ class GetCurrencyRatesUseCaseImpl @Inject constructor(
         it.map {
             CurrencyRateViewModel(
                 name = it.key,
-                verboseName = Currency.find(it.key).verboseName,
                 value = it.value
             )
         }
