@@ -53,6 +53,7 @@
                   android:minWidth="64dp"
                   android:id="@+id/amount"
                   android:inputType="numberDecimal"
+                  android:imeOptions="actionDone"
                   android:maxLength="14"
                   android:text="@={item.rate}"
                   tools:text="34.21"

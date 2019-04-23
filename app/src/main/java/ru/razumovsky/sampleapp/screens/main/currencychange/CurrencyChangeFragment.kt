@@ -16,6 +16,8 @@ import ru.razumovsky.sampleapp.R
 import ru.razumovsky.sampleapp.core.ui.BaseFragment
 import ru.razumovsky.sampleapp.databinding.CurrencyItemBinding
 import javax.inject.Inject
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 
 
 class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
@@ -82,6 +84,16 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
                 hideKeyboard()
             }
         })
+    }
+
+    private fun hideKeyboardByPressingDone(editText: EditText) {
+        editText.setOnEditorActionListener { v, actionId, event ->
+            val isDoneButtonPressed = actionId == EditorInfo.IME_ACTION_DONE
+            if (isDoneButtonPressed) {
+                hideKeyboard()
+            }
+            isDoneButtonPressed
+        }
     }
 
     override fun showCurrencies(data: List<StableId>) {
