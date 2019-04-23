@@ -44,7 +44,14 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
                 if (it.adapterPosition == 0) {
                     listenToTextChanges(it.binding.amount)
                     hideKeyboardByPressingDone(it.binding.amount)
+                    it.binding.amount.setOnTouchListener(null)
+                } else {
+                    it.binding.amount.setOnTouchListener { _, _ ->
+                        onItemClicked(it)
+                        true
+                    }
                 }
+
             }
 
             onRecycle {
