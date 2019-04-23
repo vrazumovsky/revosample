@@ -44,14 +44,10 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
                 if (it.adapterPosition == 0) {
                     listenToTextChanges(it.binding.amount)
                     hideKeyboardByPressingDone(it.binding.amount)
-                    it.binding.amount.setOnTouchListener(null)
+                    disableForwardEditTextClickToItem(it)
                 } else {
-                    it.binding.amount.setOnTouchListener { _, _ ->
-                        onItemClicked(it)
-                        true
-                    }
+                    forwardEditTextClickToItem(it)
                 }
-
             }
 
             onRecycle {
@@ -76,6 +72,17 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
         presenter.onReady()
 
         hideKeyboardOnScroll()
+    }
+
+    private fun disableForwardEditTextClickToItem(holder: Holder<CurrencyItemBinding>) {
+        holder.binding.amount.setOnTouchListener(null)
+    }
+
+    private fun forwardEditTextClickToItem(holder: Holder<CurrencyItemBinding>) {
+        holder.binding.amount.setOnTouchListener { _, _ ->
+            onItemClicked(holder)
+            true
+        }
     }
 
     private fun onItemClicked(holder: Holder<CurrencyItemBinding>) {
