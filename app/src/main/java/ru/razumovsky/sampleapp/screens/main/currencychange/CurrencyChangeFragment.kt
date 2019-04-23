@@ -83,7 +83,10 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
             presenter.itemClicked(it)
             recyclerView.scrollToPosition(0)
         }
-        holder.binding.amount.requestFocus()
+        holder.binding.amount.apply {
+            requestFocus()
+            setSelection(text.length)
+        }
         showKeyboard()
     }
 
