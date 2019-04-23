@@ -69,9 +69,18 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
         super.onViewCreated(view, savedInstanceState)
         adapter.into(recyclerView)
         buildComponent()
-        presenter.onReady()
 
         hideKeyboardOnScroll()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        presenter.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.onStop()
     }
 
     private fun disableForwardEditTextClickToItem(holder: Holder<CurrencyItemBinding>) {

@@ -2,7 +2,9 @@ package ru.razumovsky.sampleapp.screens.main.currencychange
 
 interface CurrencyChangePresenter {
 
-    fun onReady()
+    fun onStart()
+
+    fun onStop()
 
     fun itemClicked(item: CurrencyItem)
 

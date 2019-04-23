@@ -15,9 +15,15 @@ class CurrencyChangePresenterImpl @Inject constructor(
     private val useCase: GetCurrencyRatesUseCase
 ) : CurrencyChangePresenter {
 
-    override fun onReady() {
-        useCase.executePolling()
+    private var polling: Disposable? = null
+
+    override fun onStart() {
+        polling = useCase.executePolling()
             .prepareAndShowData()
+    }
+
+    override fun onStop() {
+        polling?.dispose()
     }
 
     private fun Observable<List<CurrencyRateViewModel>>.calculateCurrencyValues():
