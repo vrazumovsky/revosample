@@ -18,6 +18,7 @@ import ru.razumovsky.sampleapp.databinding.CurrencyItemBinding
 import javax.inject.Inject
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import com.github.nitrico.lastadapter.Holder
 
 
 class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
@@ -36,12 +37,7 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
 
         .map<CurrencyItem, CurrencyItemBinding>(R.layout.currency_item) {
             onClick {
-                it.binding.item?.let {
-                    presenter.itemClicked(it)
-                    recyclerView.scrollToPosition(0)
-                }
-                it.binding.amount.requestFocus()
-                showKeyboard()
+                onItemClicked(it)
             }
 
             onBind {
@@ -73,6 +69,15 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
         presenter.onReady()
 
         hideKeyboardOnScroll()
+    }
+
+    private fun onItemClicked(holder: Holder<CurrencyItemBinding>) {
+        holder.binding.item?.let {
+            presenter.itemClicked(it)
+            recyclerView.scrollToPosition(0)
+        }
+        holder.binding.amount.requestFocus()
+        showKeyboard()
     }
 
     private fun listenToTextChanges(editText: EditText) {
