@@ -31,6 +31,10 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
         private const val EMPTY_MESSAGE = "Пусто"
     }
 
+    private var isScrolling = false
+
+    override fun isScrolling(): Boolean = isScrolling
+
     private var firstItemEditTextSubscription: Disposable? = null
 
     private val items: MutableList<StableId> = mutableListOf()
@@ -72,7 +76,7 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
         adapter.into(recyclerView)
         buildComponent()
 
-        hideKeyboardOnScroll()
+        handleScrollState()
         initProgressBar()
     }
 
@@ -120,10 +124,11 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
             .subscribeBy { presenter.amountChanged(it.toString()) }
     }
 
-    private fun hideKeyboardOnScroll() {
+    private fun handleScrollState() {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
+                isScrolling = newState != RecyclerView.SCROLL_STATE_IDLE
                 hideKeyboard()
             }
         })

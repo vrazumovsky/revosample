@@ -8,4 +8,6 @@ interface CurrencyChangeView {
     fun getCurrencies(): List<StableId>
 
     fun showEmptyMessage()
+
+    fun isScrolling(): Boolean
 }

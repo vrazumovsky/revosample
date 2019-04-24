@@ -19,6 +19,7 @@ class CurrencyChangePresenterImpl @Inject constructor(
 
     override fun onStart() {
         polling = useCase.executePolling()
+            .filter { !view.isScrolling() }
             .prepareAndShowData()
     }
 
