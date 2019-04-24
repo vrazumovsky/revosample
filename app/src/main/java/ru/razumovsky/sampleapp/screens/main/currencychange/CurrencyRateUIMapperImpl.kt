@@ -8,7 +8,7 @@ import java.text.DecimalFormatSymbols
 import javax.inject.Inject
 
 class CurrencyRateUIMapperImpl @Inject constructor(): CurrencyRateUIMapper {
-    override fun map(list: List<CurrencyRateViewModel>): List<StableId> = list.mapIndexed { index, it ->
+    override fun map(list: List<CurrencyRateViewModel>): List<StableId> = list.map {
         val otherSymbols = DecimalFormatSymbols()
         otherSymbols.decimalSeparator = '.'
         val formatter = DecimalFormat("#.##", otherSymbols)
