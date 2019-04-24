@@ -4,10 +4,17 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import ru.razumovsky.sampleapp.domain.usecase.GetCurrencyRatesUseCase
 
 class CurrencyChangePresenterTest {
     @Mock
     private lateinit var mockView: CurrencyChangeView
+
+    @Mock
+    private lateinit var mockUIMapper: CurrencyRateUIMapper
+
+    @Mock
+    private lateinit var mockUseCase: GetCurrencyRatesUseCase
 
 
     private lateinit var presenter: CurrencyChangePresenter
@@ -16,14 +23,10 @@ class CurrencyChangePresenterTest {
     fun initialize() {
         MockitoAnnotations.initMocks(this)
 
-        presenter = CurrencyChangePresenterImpl(mockView)
+        presenter = CurrencyChangePresenterImpl(
+            view = mockView,
+            mapper = mockUIMapper,
+            useCase = mockUseCase)
     }
 
-
-    @Test
-    fun `presenter onReady called, should start polling currency values`() {
-        presenter.onReady()
-
-        assert(false)
-    }
 }

@@ -39,29 +39,31 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
 
     private val items: MutableList<StableId> = mutableListOf()
 
-    private val adapter: LastAdapter = LastAdapter(items, BR.item, stableIds = true)
+    private val adapter: LastAdapter by lazy {
+        LastAdapter(items, BR.item, stableIds = true)
 
-        .map<CurrencyItem, CurrencyItemBinding>(R.layout.currency_item) {
-            onClick {
-                onItemClicked(it)
-            }
+            .map<CurrencyItem, CurrencyItemBinding>(R.layout.currency_item) {
+                onClick {
+                    onItemClicked(it)
+                }
 
-            onBind {
-                if (it.adapterPosition == 0) {
-                    listenToTextChanges(it.binding.amount)
-                    hideKeyboardByPressingDone(it.binding.amount)
-                    disableForwardEditTextClickToItem(it)
-                } else {
-                    forwardEditTextClickToItem(it)
+                onBind {
+                    if (it.adapterPosition == 0) {
+                        listenToTextChanges(it.binding.amount)
+                        hideKeyboardByPressingDone(it.binding.amount)
+                        disableForwardEditTextClickToItem(it)
+                    } else {
+                        forwardEditTextClickToItem(it)
+                    }
+                }
+
+                onRecycle {
+                    if (it.adapterPosition == 0) {
+                        firstItemEditTextSubscription?.dispose()
+                    }
                 }
             }
-
-            onRecycle {
-                if (it.adapterPosition == 0) {
-                    firstItemEditTextSubscription?.dispose()
-                }
-            }
-        }
+    }
 
     @Inject
     lateinit var presenter: CurrencyChangePresenter
