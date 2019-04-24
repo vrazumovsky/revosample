@@ -27,6 +27,8 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
         fun newInstance(): CurrencyChangeFragment {
             return CurrencyChangeFragment()
         }
+
+        private const val EMPTY_MESSAGE = "Пусто"
     }
 
     private var firstItemEditTextSubscription: Disposable? = null
@@ -142,6 +144,12 @@ class CurrencyChangeFragment : BaseFragment(), CurrencyChangeView {
         items.addAll(data)
         adapter.notifyDataSetChanged()
         progressbar.visibility = View.GONE
+        errorTextView.visibility = View.GONE
+    }
+
+    override fun showEmptyMessage() {
+        errorTextView.visibility = View.VISIBLE
+        errorTextView.text = EMPTY_MESSAGE
     }
 
     override fun getCurrencies(): List<StableId> = items

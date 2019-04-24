@@ -87,6 +87,9 @@ class CurrencyChangePresenterImpl @Inject constructor(
             .subscribeBy(
                 onNext = {
                     view.showCurrencies(it)
+                    if (it.isEmpty()) {
+                        view.showEmptyMessage()
+                    }
                 },
                 onError = {
                     it.printStackTrace()

@@ -6,4 +6,6 @@ interface CurrencyChangeView {
     fun showCurrencies(data: List<StableId>)
 
     fun getCurrencies(): List<StableId>
+
+    fun showEmptyMessage()
 }
