@@ -2,15 +2,16 @@ package ru.razumovsky.sampleapp.data.repo
 
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import ru.razumovsky.sampleapp.data.mapper.CurrencyRatesDtoToEntityMapper
 import ru.razumovsky.sampleapp.data.network.request.CurrencyRatesRequest
+import ru.razumovsky.sampleapp.data.scheduler.SchedulerProvider
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class CurrencyRatesServerPollingRepoImpl @Inject constructor(
     private val request: CurrencyRatesRequest,
-    private val mapper: CurrencyRatesDtoToEntityMapper
+    private val mapper: CurrencyRatesDtoToEntityMapper,
+    private val schedulerProvider: SchedulerProvider
 
 ) : CurrencyRatesRepo {
 
@@ -18,7 +19,7 @@ class CurrencyRatesServerPollingRepoImpl @Inject constructor(
 
     override fun getRates(): Observable<Map<String, Float>> {
         return Observable.interval(1, TimeUnit.SECONDS)
-            .subscribeOn(Schedulers.newThread())
+            .subscribeOn(schedulerProvider.new())
             .flatMap { sendGetRatesRequest(it) }
             .scan { t1: PollingResult, t2: PollingResult ->
                 if (t2.counter > t1.counter) t2 else PollingResult(t1.counter, t1.result, false)
@@ -36,7 +37,7 @@ class CurrencyRatesServerPollingRepoImpl @Inject constructor(
 
     private fun sendGetRatesRequest(counter: Long): Observable<PollingResult> {
         return request.run()
-            .subscribeOn(Schedulers.newThread())
+            .subscribeOn(schedulerProvider.new())
             .map { mapper.map(it) }
             .map { it.rates.toMutableMap().apply { put(it.base, 1f) } }
             .map { PollingResult(counter, it, true) }

@@ -14,6 +14,7 @@ class App : Application() {
             .apiModule(ApiModule())
             .mapperModule(MapperModule())
             .useCaseModule(UseCaseModule())
+            .schedulerModule(SchedulerModule())
             .build()
     }
 }

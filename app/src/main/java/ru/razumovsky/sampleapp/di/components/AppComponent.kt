@@ -13,7 +13,8 @@ import ru.razumovsky.sampleapp.domain.usecase.GetCurrencyRatesUseCase
         RepoModule::class,
         RequestModule::class,
         MapperModule::class,
-        UseCaseModule::class]
+        UseCaseModule::class,
+        SchedulerModule::class]
 )
 interface AppComponent {
 
