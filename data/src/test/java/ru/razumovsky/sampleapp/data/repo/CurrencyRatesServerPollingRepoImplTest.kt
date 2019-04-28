@@ -29,6 +29,7 @@ class CurrencyRatesServerPollingRepoImplTest {
 
     private lateinit var mockResponse: CurrencyRatesResponse
     private val mockDate = "03-03-2019"
+    private lateinit var testScheduler: TestScheduler
 
     private lateinit var repo: CurrencyRatesRepo
 
@@ -46,15 +47,15 @@ class CurrencyRatesServerPollingRepoImplTest {
 
         whenever(mockRequest.run()).thenReturn(Observable.just(mockResponse))
         repo = CurrencyRatesServerPollingRepoImpl(mockRequest, mockMapper, mockSchedulerProvider)
+
+        testScheduler = TestScheduler()
+        RxJavaPlugins.setComputationSchedulerHandler { testScheduler }
+        whenever(mockSchedulerProvider.new()).thenReturn(testScheduler)
     }
 
 
     @Test
     fun `repo getRates() called and subscribed to Observable, should start polling backend for each second`() {
-        val testScheduler = TestScheduler()
-        RxJavaPlugins.setComputationSchedulerHandler { testScheduler }
-        whenever(mockSchedulerProvider.new()).thenReturn(testScheduler)
-
         val testObserver = repo.getRates()
             .observeOn(testScheduler)
             .test()
