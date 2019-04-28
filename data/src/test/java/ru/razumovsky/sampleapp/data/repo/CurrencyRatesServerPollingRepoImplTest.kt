@@ -115,4 +115,26 @@ class CurrencyRatesServerPollingRepoImplTest {
         testObserver.dispose()
         testSingleObserver.dispose()
     }
+
+    @Test
+    fun `repo getRates() polling, should retry if error`() {
+        val testObserver = repo.getRates()
+            .observeOn(testScheduler)
+            .test()
+
+        testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
+        testObserver.assertValueCount(1)
+
+        whenever(mockRequest.run()).thenReturn(Observable.error(Throwable()))
+
+        testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
+        testObserver.assertValueCount(1)
+
+        whenever(mockRequest.run()).thenReturn(Observable.just(mockResponse))
+
+        testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
+        testObserver.assertValueCount(2)
+
+        testObserver.dispose()
+    }
 }
