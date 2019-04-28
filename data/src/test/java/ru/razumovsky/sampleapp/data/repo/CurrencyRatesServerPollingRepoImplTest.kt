@@ -75,4 +75,20 @@ class CurrencyRatesServerPollingRepoImplTest {
 
         testObserver.dispose()
     }
+
+    @Test
+    fun `repo getRatesSingle() should return empty data`() {
+        val testSingleObserver = repo.getRatesSingle()
+            .observeOn(testScheduler)
+            .test()
+
+        testScheduler.advanceTimeBy(1, TimeUnit.MILLISECONDS)
+
+        testSingleObserver
+            .assertNoErrors()
+            .assertComplete()
+            .assertValue(emptyMap())
+
+        testSingleObserver.dispose()
+    }
 }
