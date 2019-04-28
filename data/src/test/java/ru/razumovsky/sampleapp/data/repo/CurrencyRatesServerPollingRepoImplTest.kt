@@ -34,7 +34,7 @@ class CurrencyRatesServerPollingRepoImplTest {
     private lateinit var repo: CurrencyRatesRepo
 
     private val mockRates = mapOf(
-        Pair(Currency.EUR.value, 1.4f),
+        Pair(Currency.GBP.value, 1.4f),
         Pair(Currency.AUD.value, 1.3f),
         Pair(Currency.USD.value, 1.1f)
     )
@@ -87,8 +87,32 @@ class CurrencyRatesServerPollingRepoImplTest {
         testSingleObserver
             .assertNoErrors()
             .assertComplete()
-            .assertValue(emptyMap())
+            .assertValue { it.isEmpty() }
 
+        testSingleObserver.dispose()
+    }
+
+    @Test
+    fun `repo getRates() polling, should update cache`() {
+        val testObserver = repo.getRates()
+            .observeOn(testScheduler)
+            .test()
+
+        testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
+
+
+        val testSingleObserver = repo.getRatesSingle()
+            .observeOn(testScheduler)
+            .test()
+
+        testScheduler.advanceTimeBy(1, TimeUnit.MILLISECONDS)
+
+        testSingleObserver
+            .assertNoErrors()
+            .assertComplete()
+            .assertValue { it.isNotEmpty() }
+
+        testObserver.dispose()
         testSingleObserver.dispose()
     }
 }
