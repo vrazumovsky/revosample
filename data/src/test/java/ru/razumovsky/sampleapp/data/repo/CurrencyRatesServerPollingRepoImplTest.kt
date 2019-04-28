@@ -137,4 +137,23 @@ class CurrencyRatesServerPollingRepoImplTest {
 
         testObserver.dispose()
     }
+
+    @Test
+    fun `repo getRates() polling, should add base EUR additional rate`() {
+        val testObserver = repo.getRates()
+            .observeOn(testScheduler)
+            .test()
+
+        testObserver.assertNotTerminated()
+            .assertNoErrors()
+            .assertValueCount(0)
+
+        testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
+        testObserver.assertValue {
+            it.count() == mockRates.count() + 1 &&
+                    it[Currency.EUR.value] != null
+        }
+
+        testObserver.dispose()
+    }
 }
