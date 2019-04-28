@@ -1,11 +1,10 @@
 package ru.razumovsky.sampleapp.data.repo
 
+import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.Observable
 import io.reactivex.plugins.RxJavaPlugins
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.schedulers.TestScheduler
 import org.junit.Before
 import org.junit.Test
@@ -67,6 +66,7 @@ class CurrencyRatesServerPollingRepoImplTest {
         for (i in 1..10) {
             testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
             testObserver.assertValueCount(i)
+            verify(mockRequest, times(i)).run()
         }
 
         testScheduler.advanceTimeBy(90, TimeUnit.SECONDS)
