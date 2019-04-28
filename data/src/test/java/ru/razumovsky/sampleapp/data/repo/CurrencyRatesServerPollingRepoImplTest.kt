@@ -156,4 +156,35 @@ class CurrencyRatesServerPollingRepoImplTest {
 
         testObserver.dispose()
     }
+
+    @Test
+    fun `repo getRates() polling, should drop responses for old requests`() {
+        val testObserver = repo.getRates()
+            .observeOn(testScheduler)
+            .test()
+
+        testObserver.assertNotTerminated()
+            .assertNoErrors()
+            .assertValueCount(0)
+
+        testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
+        testObserver.assertValueCount(1)
+
+        val delayedResponse = Observable
+            .just(mockResponse)
+            .delay(2, TimeUnit.SECONDS)
+
+        whenever(mockRequest.run()).thenReturn(delayedResponse)
+
+        testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
+        testObserver.assertValueCount(1)
+
+        whenever(mockRequest.run()).thenReturn(Observable.just(mockResponse))
+
+        testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
+        testObserver.assertValueCount(2)
+
+
+        testObserver.dispose()
+    }
 }
