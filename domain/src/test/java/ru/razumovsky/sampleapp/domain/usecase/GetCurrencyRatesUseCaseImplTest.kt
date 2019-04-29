@@ -25,6 +25,7 @@ class GetCurrencyRatesUseCaseImplTest {
     private val mockRates = mapOf(
         Pair(Currency.GBP.value, 1.4f),
         Pair(Currency.AUD.value, 1.3f),
+        Pair(Currency.EUR.value, 1.0f),
         Pair(Currency.USD.value, 1.1f)
     )
 
@@ -61,7 +62,14 @@ class GetCurrencyRatesUseCaseImplTest {
             .assertValue {
                 it.filter { mockRates[it.name] != null }.size == mockRates.size
             }
+    }
 
-
+    @Test
+    fun `usecase execute(), should map rates`() {
+        useCase.execute().test()
+            .assertValue { it.size == mockRates.size }
+            .assertValue {
+                it.filter { mockRates[it.name] != null }.size == mockRates.size
+            }
     }
 }
