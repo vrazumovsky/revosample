@@ -72,4 +72,16 @@ class GetCurrencyRatesUseCaseImplTest {
                 it.filter { mockRates[it.name] != null }.size == mockRates.size
             }
     }
+
+    @Test
+    fun `usecase executePolling(), should make Euro first in the list`() {
+        useCase.executePolling().test()
+            .assertValue { it.first().name == Currency.EUR.value }
+    }
+
+    @Test
+    fun `usecase execute(), should make Euro first in the list`() {
+        useCase.execute().test()
+            .assertValue { it.first().name == Currency.EUR.value }
+    }
 }
