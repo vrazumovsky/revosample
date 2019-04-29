@@ -26,7 +26,9 @@ class MainActivity : AppCompatActivity(), MainView, BaseRouterView,
         setContentView(R.layout.activity_main)
 
         buildComponent()
-        presenter.onReady()
+        if (savedInstanceState == null) {
+            presenter.onCreate()
+        }
 
     }
 
