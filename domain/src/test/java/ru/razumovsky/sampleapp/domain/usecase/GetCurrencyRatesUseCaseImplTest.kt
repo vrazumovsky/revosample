@@ -53,4 +53,15 @@ class GetCurrencyRatesUseCaseImplTest {
         useCase.execute()
         verify(mockRepo).getRatesSingle()
     }
+
+    @Test
+    fun `usecase executePolling() item emitted, should map rates`() {
+        useCase.executePolling().test()
+            .assertValue { it.size == mockRates.size }
+            .assertValue {
+                it.filter { mockRates[it.name] != null }.size == mockRates.size
+            }
+
+
+    }
 }
