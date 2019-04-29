@@ -17,9 +17,29 @@ android {
     }
 
     buildTypes {
+        ext.configure = { buildType, properties ->
+
+            def buildPropertiesFile = file(properties)
+            if (buildPropertiesFile.exists()) {
+                Properties buildProperties = new Properties()
+                buildProperties.load(new FileInputStream(buildPropertiesFile))
+
+                buildType.buildConfigField "String", "BACKEND_URL", "\"${buildProperties['backend_url']}\""
+            } else {
+                throw new GradleException("properties file $properties doesn't exist")
+            }
+        }
+
+        debug {
+            minifyEnabled false
+            configure(buildTypes.debug, "url.properties")
+        }
+
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            configure(buildTypes.release, "url.properties")
         }
     }
 
