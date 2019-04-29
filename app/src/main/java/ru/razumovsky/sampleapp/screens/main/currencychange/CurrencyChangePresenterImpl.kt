@@ -2,9 +2,9 @@ package ru.razumovsky.sampleapp.screens.main.currencychange
 
 import com.github.nitrico.lastadapter.StableId
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
+import ru.razumovsky.sampleapp.data.scheduler.SchedulerProvider
 import ru.razumovsky.sampleapp.domain.usecase.GetCurrencyRatesUseCase
 import ru.razumovsky.sampleapp.domain.viewmodel.CurrencyRateViewModel
 import javax.inject.Inject
@@ -12,6 +12,7 @@ import javax.inject.Inject
 class CurrencyChangePresenterImpl @Inject constructor(
     private val view: CurrencyChangeView,
     private val mapper: CurrencyRateUIMapper,
+    private val schedulerProvider: SchedulerProvider,
     private val useCase: GetCurrencyRatesUseCase
 ) : CurrencyChangePresenter {
 
@@ -84,7 +85,7 @@ class CurrencyChangePresenterImpl @Inject constructor(
             .calculateCurrencyValues()
             .map { mapper.map(it) }
             .remainFirstItemUnchanged()
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(schedulerProvider.main())
             .subscribeBy(
                 onNext = {
                     view.showCurrencies(it)
