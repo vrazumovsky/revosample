@@ -26,7 +26,7 @@ class MainPresenterImplTest {
 
     @Test
     fun `presenter onCreate called, should call router open currency change screen`() {
-        presenter.onReady()
+        presenter.onCreate()
         verify(mockRouter).openCurrencyChangeInfo()
     }
 }
