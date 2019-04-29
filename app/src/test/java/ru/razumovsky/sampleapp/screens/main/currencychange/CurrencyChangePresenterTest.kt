@@ -1,7 +1,6 @@
 package ru.razumovsky.sampleapp.screens.main.currencychange
 
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Observable
 import io.reactivex.schedulers.TestScheduler
 import org.junit.Before
@@ -12,6 +11,7 @@ import ru.razumovsky.sampleapp.data.entity.Currency
 import ru.razumovsky.sampleapp.data.scheduler.SchedulerProvider
 import ru.razumovsky.sampleapp.domain.usecase.GetCurrencyRatesUseCase
 import ru.razumovsky.sampleapp.domain.viewmodel.CurrencyRateViewModel
+import java.util.concurrent.TimeUnit
 
 class CurrencyChangePresenterTest {
     @Mock
@@ -36,13 +36,15 @@ class CurrencyChangePresenterTest {
         CurrencyRateViewModel(Currency.GBP.value, 1.4f)
     )
 
+    private val testScheduler = TestScheduler()
+
+
     @Before
     fun initialize() {
         MockitoAnnotations.initMocks(this)
         whenever(mockUseCase.executePolling()).thenReturn(Observable.just(mockRates))
         whenever(mockView.getCurrencies()).thenReturn(emptyList())
 
-        val testScheduler = TestScheduler()
         whenever(mockSchedulerProvider.main()).thenReturn(testScheduler)
 
         presenter = CurrencyChangePresenterImpl(
@@ -63,6 +65,38 @@ class CurrencyChangePresenterTest {
     fun `polling should be observed on main thread`() {
         presenter.onStart()
         verify(mockSchedulerProvider).main()
+    }
+
+    @Test
+    fun `polling emits item, should show currencies on view`() {
+        presenter.onStart()
+
+        testScheduler.advanceTimeBy(1, TimeUnit.MILLISECONDS)
+        verify(mockView).showCurrencies(any())
+    }
+
+    @Test
+    fun `polling emits item, should NOT show currencies on view if it is scrolling`() {
+        whenever(mockView.isScrolling()).thenReturn(true)
+        presenter.onStart()
+
+        testScheduler.advanceTimeBy(1, TimeUnit.MILLISECONDS)
+        verify(mockView, times(0)).showCurrencies(any())
+    }
+
+    @Test
+    fun `polling emits item, should show empty message if response is empty`() {
+        whenever(mockUseCase.executePolling()).thenReturn(Observable.just(emptyList()))
+        presenter.onStart()
+
+        testScheduler.advanceTimeBy(1, TimeUnit.MILLISECONDS)
+        verify(mockView).showEmptyMessage()
+    }
+
+    @Test
+    fun `polling emits item, should map values to items`() {
+        presenter.onStart()
+        verify(mockUIMapper).map(any())
     }
 
 }
