@@ -13,4 +13,6 @@ interface SchedulerProvider {
     fun trampoline(): Scheduler
 
     fun single(): Scheduler
+
+    fun main(): Scheduler
 }
